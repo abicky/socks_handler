@@ -1,0 +1,72 @@
+version: "2.4"
+services:
+  create-work-directory:
+    image: wernight/dante
+    entrypoint: ""
+    command: |
+      sh -c '
+      cat <<EOF >/work/entrypoint.sh
+      #!/bin/sh
+      set -e
+
+      # Allow IPv6 access
+      sed -i "s|from: 0.0.0.0/0 to: 0.0.0.0/0|from: 0/0 to: 0/0|" /etc/sockd.conf
+
+      if [ -n "\$$USERNAME" ]; then
+        sed -i "s/^    \#socksmethod: username/    socksmethod: username/" /etc/sockd.conf
+
+        printf "\$$PASSWORD\\n\$$PASSWORD\\n" | adduser \$$USERNAME
+      fi
+      exec sockd
+
+      EOF
+
+      chmod +x /work/entrypoint.sh
+      '
+    volumes:
+      - type: volume
+        source: workdir
+        target: /work
+
+  sockd-auth-none:
+    image: wernight/dante
+    command: /work/entrypoint.sh
+    ports:
+      - 1080:1080
+    volumes:
+      - type: volume
+        source: workdir
+        target: /work
+    depends_on:
+      create-work-directory:
+        condition: service_completed_successfully
+
+  sockd-auth-username-password:
+    image: wernight/dante
+    command: /work/entrypoint.sh
+    environment:
+      USERNAME: user
+      PASSWORD: pass
+    ports:
+      - 1081:1080
+    volumes:
+      - type: volume
+        source: workdir
+        target: /work
+    depends_on:
+      create-work-directory:
+        condition: service_completed_successfully
+
+  nginx:
+    image: nginx
+
+volumes:
+  workdir:
+
+networks:
+  default:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 2001:3984:3989::/64
+          gateway: 2001:3984:3989::1
