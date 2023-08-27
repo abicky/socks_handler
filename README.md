@@ -58,7 +58,7 @@ require "socks_handler"
 
 SocksHandler.socksify([
   SocksHandler::ProxyAccessRule.new(
-    remote_host_patterns: ["nginx"],
+    host_patterns: ["nginx"],
     socks_server: "127.0.0.1:1080",
   )
 ])
@@ -80,7 +80,7 @@ require "socks_handler"
 
 SocksHandler.socksify([
   SocksHandler::ProxyAccessRule.new(
-    remote_host_patterns: ["nginx"],
+    host_patterns: ["nginx"],
     socks_server: "127.0.0.1:1080",
   )
 ])
@@ -121,7 +121,7 @@ require "mysql2"
 
 SocksHandler.socksify([
   SocksHandler::ProxyAccessRule.new(
-    remote_host_patterns: ["mysql"],
+    host_patterns: ["mysql"],
     socks_server: "127.0.0.1:1080",
   )
 ])

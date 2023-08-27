@@ -3,9 +3,9 @@ require "socks_handler/rule"
 
 class SocksHandler
   class DirectAccessRule < Rule
-    # @param remote_host_patterns [Array<String, Regexp>]
-    def initialize(remote_host_patterns:)
-      super(remote_host_patterns: remote_host_patterns)
+    # @param host_patterns [Array<String, Regexp>]
+    def initialize(host_patterns:)
+      super(host_patterns: host_patterns)
     end
 
     # @return [true]

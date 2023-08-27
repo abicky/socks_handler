@@ -22,10 +22,10 @@ RSpec.describe SocksHandler do
     end
 
     let(:rule1) do
-      SocksHandler::DirectAccessRule.new(remote_host_patterns: %w[127.0.0.1 ::1])
+      SocksHandler::DirectAccessRule.new(host_patterns: %w[127.0.0.1 ::1])
     end
     let(:rule2) do
-      SocksHandler::ProxyAccessRule.new(remote_host_patterns: ["192.168.0.2", /(?:\A|\.)example\.com\z/], socks_server: "127.0.0.1:1080")
+      SocksHandler::ProxyAccessRule.new(host_patterns: ["192.168.0.2", /(?:\A|\.)example\.com\z/], socks_server: "127.0.0.1:1080")
     end
 
     it "returns the first rule that matches with the patterns" do
@@ -46,7 +46,7 @@ RSpec.describe SocksHandler do
     context "with authentication method 'none'" do
       let(:rules) do
         [
-          SocksHandler::ProxyAccessRule.new(remote_host_patterns: ["nginx"], socks_server: "127.0.0.1:1080"),
+          SocksHandler::ProxyAccessRule.new(host_patterns: ["nginx"], socks_server: "127.0.0.1:1080"),
         ]
       end
 
@@ -65,7 +65,7 @@ RSpec.describe SocksHandler do
       let(:rules) do
         [
           SocksHandler::ProxyAccessRule.new(
-            remote_host_patterns: ["nginx"],
+            host_patterns: ["nginx"],
             socks_server: "127.0.0.1:1081",
             username: "user",
             password: password,
@@ -107,7 +107,7 @@ RSpec.describe SocksHandler do
     context "with direct access" do
       let(:rules) do
         [
-          SocksHandler::DirectAccessRule.new(remote_host_patterns: ["nginx"]),
+          SocksHandler::DirectAccessRule.new(host_patterns: ["nginx"]),
         ]
       end
 
@@ -127,7 +127,7 @@ RSpec.describe SocksHandler do
     context "with service name" do
       let(:rules) do
         [
-          SocksHandler::ProxyAccessRule.new(remote_host_patterns: ["nginx"], socks_server: "127.0.0.1:1080"),
+          SocksHandler::ProxyAccessRule.new(host_patterns: ["nginx"], socks_server: "127.0.0.1:1080"),
         ]
       end
 
@@ -141,7 +141,7 @@ RSpec.describe SocksHandler do
     context "with IPv4 address" do
       let(:rules) do
         [
-          SocksHandler::ProxyAccessRule.new(remote_host_patterns: [//], socks_server: "127.0.0.1:1080"),
+          SocksHandler::ProxyAccessRule.new(host_patterns: [//], socks_server: "127.0.0.1:1080"),
         ]
       end
 
@@ -156,7 +156,7 @@ RSpec.describe SocksHandler do
     context "with IPv6 address" do
       let(:rules) do
         [
-          SocksHandler::ProxyAccessRule.new(remote_host_patterns: [//], socks_server: "127.0.0.1:1080"),
+          SocksHandler::ProxyAccessRule.new(host_patterns: [//], socks_server: "127.0.0.1:1080"),
         ]
       end
 
@@ -172,7 +172,7 @@ RSpec.describe SocksHandler do
   describe ".desocksify" do
     it do
       rules = [
-        SocksHandler::ProxyAccessRule.new(remote_host_patterns: [//], socks_server: "127.0.0.1:1080"),
+        SocksHandler::ProxyAccessRule.new(host_patterns: [//], socks_server: "127.0.0.1:1080"),
       ]
       SocksHandler.socksify(rules)
       [TCPSocket.method(:new), Socket.method(:tcp)].each do |method|

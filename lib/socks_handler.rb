@@ -28,23 +28,23 @@ class SocksHandler
     # @example
     #   SocksHandler.socksify([
     #     # Access 127.0.0.1, ::1 or hosts that end in ".local" directly
-    #     SocksHandler::DirectAccessRule.new(remote_host_patterns: %w[127.0.0.1 ::1] + [/\.local\z/]),
+    #     SocksHandler::DirectAccessRule.new(host_patterns: %w[127.0.0.1 ::1] + [/\.local\z/]),
     #
     #     # Access hosts that end in ".ap-northeast-1.compute.internal" through 127.0.0.1:1080
     #     SocksHandler::ProxyAccessRule.new(
-    #       remote_host_patterns: [/\.ap-northeast-1\.compute\.internal\z/],
+    #       host_patterns: [/\.ap-northeast-1\.compute\.internal\z/],
     #       socks_server: "127.0.0.1:1080",
     #     ),
     #
     #     # Access hosts that end in ".ec2.internal" through 127.0.0.1:1081
     #     SocksHandler::ProxyAccessRule.new(
-    #       remote_host_patterns: [/\.ec2\.internal\z/],
+    #       host_patterns: [/\.ec2\.internal\z/],
     #       socks_server: "127.0.0.1:1081",
     #     ),
     #
     #     # Access others hosts through 127.0.0.1:1082 with username/password auth
     #     SocksHandler::ProxyAccessRule.new(
-    #       remote_host_patterns: [//],
+    #       host_patterns: [//],
     #       socks_server: "127.0.0.1:1082",
     #       username: "user",
     #       password: ENV["SOCKS_SERVER_PASSWORD"],

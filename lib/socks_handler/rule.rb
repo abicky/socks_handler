@@ -9,10 +9,10 @@ class SocksHandler
   #   @return [String, nil]
   # @!attribute [r] password
   #   @return [String, nil]
-  # @!attribute [r] remote_host_patterns
+  # @!attribute [r] host_patterns
   #   @return [Array<String, Regexp>]
   class Rule
-    attr_reader :host, :port, :username, :password, :remote_host_patterns
+    attr_reader :host, :port, :username, :password, :host_patterns
 
     # @return [Rule]
     def self.new(**kwargs)
@@ -20,17 +20,17 @@ class SocksHandler
       super
     end
 
-    # @param remote_host_patterns [Array<String, Regexp>]
+    # @param host_patterns [Array<String, Regexp>]
     # @param host [String, nil]
     # @param port [Integer, nil]
     # @param username [String, nil]
     # @param password [String, nil]
-    def initialize(remote_host_patterns:, host: nil, port: nil, username: nil, password: nil)
+    def initialize(host_patterns:, host: nil, port: nil, username: nil, password: nil)
       @host = host
       @port = port
       @username = username
       @password = password
-      self.remote_host_patterns = remote_host_patterns
+      self.host_patterns = host_patterns
     end
 
     # @return [Boolean]
@@ -40,9 +40,9 @@ class SocksHandler
 
     # @param value [Array<String, Regexp>]
     # @return [Array<String, Regexp>]
-    def remote_host_patterns=(value)
-      raise ArgumentError, "remote_host_patterns is not an array" unless value.is_a?(Array)
-      @remote_host_patterns = value.frozen? ? value : value.dup.freeze
+    def host_patterns=(value)
+      raise ArgumentError, "host_patterns is not an array" unless value.is_a?(Array)
+      @host_patterns = value.frozen? ? value : value.dup.freeze
       @remote_host_pattern_regex = Regexp.union(convert_regexps(value))
       value
     end
