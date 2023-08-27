@@ -8,6 +8,7 @@ class SocksHandler
       super(remote_host_patterns: remote_host_patterns)
     end
 
+    # @return [true]
     def direct
       true
     end

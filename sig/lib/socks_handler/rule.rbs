@@ -1,0 +1,5 @@
+class SocksHandler
+  class Rule
+    @remote_host_pattern_regex: Regexp
+  end
+end

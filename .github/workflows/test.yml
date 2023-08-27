@@ -25,7 +25,9 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+    - name: Check if defs.rbs is up-to-date
+      run: bundle exec rake generate_rbs && git diff --exit-code
     - name: Run the default task
       run: |
         docker compose up -d
-        bundle exec rake
+        RUBYOPT='-rbundler/setup -rrbs/test/setup' RBS_TEST_TARGET='SocksHandler::*' bundle exec rake

@@ -8,6 +8,7 @@ class SocksHandler
   class AuthenticationFailure < StandardError; end
 
   class RelayRequestFailure < StandardError
+    # @param code [Integer]
     def initialize(code)
       case code
       when 0x01

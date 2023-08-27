@@ -12,6 +12,7 @@ class SocksHandler
       super(remote_host_patterns: remote_host_patterns, host: host, port: port.to_i, username: username, password: password)
     end
 
+    # @return [false]
     def direct
       false
     end
