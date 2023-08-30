@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require "socks_handler/rule"
 
-class SocksHandler
+module SocksHandler
   class DirectAccessRule < Rule
     # @param host_patterns [Array<String, Regexp>]
     def initialize(host_patterns:)

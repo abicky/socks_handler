@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.authors = ["abicky"]
   spec.email = ["takeshi.arabiki@gmail.com"]
 
-  spec.summary = "A flexible socksifier for TCP connections created by TCPSocket.new or Socket.tcp"
+  spec.summary = "A flexible socksifier for sockets created by TCPSocket.new, Socket.tcp or UDPSocket.new"
   spec.description = <<~DESC
-    SocksHandler is a flexible socksifier for TCP connections created by `TCPSocket.new` or `Socket.tcp` that solves the following issues:
+    SocksHandler is a flexible socksifier for sockets created by `TCPSocket.new`, `Socket.tcp` or UDPSocket.new that solves the following issues:
     1) `SOCKSSocket` is not easy to use, 2) Famous socksifiers such as socksify and proxychains4 don't support rules using domain names.
   DESC
   spec.homepage = "https://github.com/abicky/socks_handler"

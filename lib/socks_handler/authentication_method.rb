@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SocksHandler
+module SocksHandler
   module AuthenticationMethod
     # @return [Integer]
     NONE = 0x00

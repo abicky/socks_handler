@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require "net/http"
 
-RSpec.describe SocksHandler do
+RSpec.describe SocksHandler::TCP do
   def send_head_request(socket_build_method, host, port)
     socket = socket_build_method.call(host, port)
     socket.write(<<~REQUEST.gsub("\n", "\r\n"))
@@ -13,12 +13,12 @@ RSpec.describe SocksHandler do
   end
 
   after do
-    SocksHandler.desocksify
+    SocksHandler::TCP.desocksify
   end
 
   describe ".fine_rule" do
     before do
-      SocksHandler.socksify([rule1, rule2])
+      SocksHandler::TCP.socksify([rule1, rule2])
     end
 
     let(:rule1) do
@@ -40,7 +40,7 @@ RSpec.describe SocksHandler do
 
   describe ".socksify" do
     before do
-      SocksHandler.socksify(rules)
+      SocksHandler::TCP.socksify(rules)
     end
 
     context "with authentication method 'none'" do
@@ -174,19 +174,19 @@ RSpec.describe SocksHandler do
       rules = [
         SocksHandler::ProxyAccessRule.new(host_patterns: [//], socks_server: "127.0.0.1:1080"),
       ]
-      SocksHandler.socksify(rules)
+      SocksHandler::TCP.socksify(rules)
       [TCPSocket.method(:new), Socket.method(:tcp)].each do |method|
         expect(send_head_request(method, "nginx", "http")).to eq "HTTP/1.1 200 OK"
       end
 
-      SocksHandler.desocksify
+      SocksHandler::TCP.desocksify
       [TCPSocket.method(:new), Socket.method(:tcp)].each do |method|
         expect {
           Net::HTTP.start("nginx", 80) {}
         }.to raise_error(SocketError, /getaddrinfo/)
       end
 
-      SocksHandler.socksify(rules)
+      SocksHandler::TCP.socksify(rules)
       [TCPSocket.method(:new), Socket.method(:tcp)].each do |method|
         expect(send_head_request(method, "nginx", "http")).to eq "HTTP/1.1 200 OK"
       end

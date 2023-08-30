@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SocksHandler
+module SocksHandler
   class UnsupportedProtocol < StandardError; end
 
   class NoAcceptableMethods < StandardError; end

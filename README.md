@@ -1,6 +1,6 @@
 # SocksHandler
 
-SocksHandler is a flexible socksifier for TCP connections created by `TCPSocket.new` or `Socket.tcp` that solves the following issues:
+SocksHandler is a flexible socksifier for sockets created by `TCPSocket.new`, `Socket.tcp`, or `UDPSocket.new` that solves the following issues:
 
 * `SOCKSSocket` is not easy to use
     - It is unavailable unless ruby is built with `--enable-socks`, and even if it is available, we cannot use domain names that the network where the program runs cannot resolve since socket classes, including `SOCKSSocket`, call `getaddrinfo` at initialization.
@@ -21,7 +21,9 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-Assuming that a SOCKS server that can access the host "nginx" is listening on 127.0.0.1:1080. You can prepare such an environment with the following docker-compose.yml.
+### Socksify TCP Connections
+
+Assuming that a SOCKS server that can access the host "nginx" is listening on 127.0.0.1:1080. You can prepare such an environment with the following docker-compose.yml:
 
 ```yaml
 version: "2.4"
@@ -41,7 +43,7 @@ Here is an example to create a socket that can access the host "nginx" from the 
 require "socks_handler"
 
 socket = TCPSocket.new("127.0.0.1", 1080) # or Socket.tcp("127.0.0.1", 1080)
-SocksHandler.establish_connection(socket, "nginx", 80)
+SocksHandler::TCP.establish_connection(socket, "nginx", 80)
 
 socket.write(<<~REQUEST.gsub("\n", "\r\n"))
   HEAD / HTTP/1.1
@@ -56,7 +58,7 @@ If you want to access the host through the SOCKS server implicitly, you can use 
 ```ruby
 require "socks_handler"
 
-SocksHandler.socksify([
+SocksHandler::TCP.socksify([
   SocksHandler::ProxyAccessRule.new(
     host_patterns: ["nginx"],
     socks_server: "127.0.0.1:1080",
@@ -72,13 +74,13 @@ REQUEST
 puts socket.gets #=> HTTP/1.1 200 OK
 ```
 
-With `SocksHandler.socksify`, other methods using `TCPSocket.new` or `Socket.tcp` also access the remote host through the SOCKS server:
+With `SocksHandler::TCP.socksify`, other methods using `TCPSocket.new` or `Socket.tcp` also access the remote host through the SOCKS server:
 
 ```ruby
 require "net/http"
 require "socks_handler"
 
-SocksHandler.socksify([
+SocksHandler::TCP.socksify([
   SocksHandler::ProxyAccessRule.new(
     host_patterns: ["nginx"],
     socks_server: "127.0.0.1:1080",
@@ -90,11 +92,45 @@ Net::HTTP.start("nginx", 80) do |http|
 end
 ```
 
-For more details, see the document of `SocksHandler.socksify`:
+For more details, see the document of `SocksHandler::TCP.socksify`:
 
 ```
-$ ri SocksHandler.socksify
+$ ri SocksHandler::TCP.socksify
 ```
+
+### Socksify UDP Connections
+
+Assuming that a SOCKS server that can access the host "echo", which is a UDP echo server, is listening on 127.0.0.1:1080. You can prepare such an environment with the following docker-compose.yml:
+
+```yaml
+version: "2.4"
+services:
+  sockd:
+    image: wernight/dante
+    ports:
+      - 1080:1080
+      - 1024-1030:1024-1030/udp
+    sysctls:
+      net.ipv4.ip_local_port_range: "1024 1030"
+
+  echo:
+    image: abicky/ncat:latest
+    command: -e /bin/cat -kul 7
+    init: true
+```
+
+Here is an example to create a socket that can access the host "nginx" from the Docker host:
+
+```ruby
+require "socks_handler"
+
+tcp_socket = TCPSocket.new("127.0.0.1", 1080) # or Socket.tcp("127.0.0.1", 1080)
+udp_socket = SocksHandler::UDP.associate_udp(tcp_socket, "0.0.0.0", 0)
+
+udp_socket.send("hello", 0, "echo", 7)
+puts udp_socket.gets #=> hello
+```
+
 
 ## Limitation
 

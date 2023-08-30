@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SocksHandler
+module SocksHandler
   module AddressType
     # @return [Integer]
     IPV4 = 0x01

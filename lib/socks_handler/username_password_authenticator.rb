@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require "socks_handler/errors"
 
-class SocksHandler
+module SocksHandler
   # An implementation of https://www.ietf.org/rfc/rfc1929.txt
   class UsernamePasswordAuthenticator
     # @return [Integer]
@@ -17,7 +17,7 @@ class SocksHandler
       @password = password
     end
 
-    # @param socket [IO] (The actual type is Socket, TCPSocket and IO is just for avoiding RBS::NoTypeFoundError)
+    # @param socket [Socket, TCPSocket]
     # @return [nil]
     def authenticate(socket)
       socket.write([SUBNEGOTIATION_VERSION, @username.bytesize, @username, @password.bytesize, @password].pack("CCa*Ca*"))

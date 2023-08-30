@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require "socks_handler/rule"
 
-class SocksHandler
+module SocksHandler
   class ProxyAccessRule < Rule
     # @param host_patterns [Array<String, Regexp>]
     # @param socks_server [String] a string in the format "<host>:<port>"

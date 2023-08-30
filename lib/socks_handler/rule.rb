@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SocksHandler
+module SocksHandler
   # @!attribute [r] host
   #   @return [String, nil]
   # @!attribute [r] port

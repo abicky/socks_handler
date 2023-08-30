@@ -1,0 +1,4 @@
+# Workaround for the error "RBS::NoTypeFoundError: Could not find Socket/TCPSocket/UDPSocket"
+class Socket end
+class TCPSocket end
+class UDPSocket end
